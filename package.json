@@ -1,0 +1,28 @@
+{
+  "name": "leaflet-equidistant",
+  "version": "0.0.1",
+  "description": "Equidistant polar grid for Leaflet maps",
+  "main": "leaflet-equidistant.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/artsur/LeafletEquidistant.git"
+  },
+  "keywords": [
+    "leaflet",
+    "polar",
+    "grid",
+    "equidistant"
+  ],
+  "author": "Artem Surkov",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/artsur/LeafletEquidistant/issues"
+  },
+  "homepage": "https://github.com/artsur/LeafletEquidistant#readme",
+  "devDependencies": {
+    "leaflet": "^1.7.1"
+  }
+}
