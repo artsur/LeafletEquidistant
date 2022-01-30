@@ -6,7 +6,9 @@ The same distance on some projections (eg Mercator EPSG: 3857) at high latitudes
 
 ![See distance from map center!](screenshot.jpg "Leaflet Equidistant Plugin")
 
-#Usage
+[DEMO](https://artsur.github.io/LeafletEquidistant/src/)
+
+# Usage
 
 ```$js
     const options = {
@@ -21,7 +23,7 @@ The same distance on some projections (eg Mercator EPSG: 3857) at high latitudes
 ```
 
 
-#Options
+# Options
 
 | Option | Type | Default | Description |
 |--------|------|-----|--------------------------|
@@ -46,7 +48,7 @@ The same distance on some projections (eg Mercator EPSG: 3857) at high latitudes
 | updateThrottleMs | number | 10 | Time in milliseconds for throttling move map events  |
 | rangeSet | array of objects | see example | A set of parameters for determining the distance grid at different map zooms |
 
-###Example of rangeSet
+### Example of rangeSet
 
 ```$js
     [
