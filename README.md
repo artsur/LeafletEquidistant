@@ -3,6 +3,7 @@
 This is a plugin for Leaflet that gives a visual representation of distances from the center of the map viewport.
 
 The same distance on some projections (eg Mercator EPSG: 3857) at high latitudes and closer to the equator will differ visually.
+
 [DEMO](https://artsur.github.io/LeafletEquidistant/src/)
 
 ![See distance from map center!](screenshot.jpg "Leaflet Equidistant Plugin")
