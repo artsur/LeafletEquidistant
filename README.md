@@ -41,7 +41,8 @@ The same distance on some projections (eg Mercator EPSG: 3857) at high latitudes
 | centerLinesColor | string | #d00 | Color of center lines |
 | centerLinesWidth | number | 0.7 | Width of center lines |
 | centerLinesOpacity | number | 0.7 | Opacity of center lines |
-| centerLinesDashArray | array of numbers | [8, 4] | Pattern of dashes and gaps used to paint center lines  || centerLinesColor | string | #d00 | Color of center lines |
+| centerLinesDashArray | array of numbers | [8, 4] | Pattern of dashes and gaps used to paint center lines  |
+| centerLinesColor | string | #d00 | Color of center lines |
 | distanceLinesColor | string | #d00 | Color of equidistant lines |
 | distanceLinesWidth | number | 0.6 | Width of equidistant lines |
 | distanceLinesOpacity | number | 0.6 | Opacity of equidistant lines |
