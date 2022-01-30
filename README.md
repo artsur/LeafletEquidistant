@@ -6,7 +6,7 @@ The same distance on some projections (eg Mercator EPSG: 3857) at high latitudes
 
 [DEMO](https://artsur.github.io/LeafletEquidistant/src/)
 
-![See distance from map center!](screenshot.jpg "Leaflet Equidistant Plugin")
+[![See distance from map center!](screenshot.jpg "Leaflet Equidistant Plugin")](https://artsur.github.io/LeafletEquidistant/src/)
 
 
 # Usage
