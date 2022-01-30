@@ -1,5 +1,5 @@
 {
-  "name": "leaflet-equidistant",
+  "name": "@artsur/leaflet-equidistant",
   "version": "0.0.1",
   "description": "Equidistant polar grid for Leaflet maps",
   "main": "leaflet-equidistant.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/artsur/LeafletEquidistant.git"
+    "url": "git://github.com/artsur/LeafletEquidistant.git"
   },
   "keywords": [
     "leaflet",
@@ -24,5 +24,8 @@
   "homepage": "https://github.com/artsur/LeafletEquidistant#readme",
   "devDependencies": {
     "leaflet": "^1.7.1"
+  },
+  "publishConfig": {
+    "registry":"https://npm.pkg.github.com"
   }
 }
