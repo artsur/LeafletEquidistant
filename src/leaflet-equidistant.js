@@ -1,4 +1,3 @@
-//import L from 'leaflet';
 ( function () {
 L.LeafletEquidistant = L.Control.extend({
   includes: (L.Evented.prototype || L.Mixin.Events),
@@ -21,25 +20,24 @@ L.LeafletEquidistant = L.Control.extend({
     labelsColor: '#f00',
     labelsFont: '10px sans-serif',
     labelUnits: 'km',
-    updateThrottleMs: 10,
+    updateThrottleMs: 20,
     rangeSet: [
-      {minZoom: 1, maxZoom: 2, distance: 5000},
       {minZoom: 3, maxZoom: 3, distance: 1000},
       {minZoom: 4, maxZoom: 4, distance: 500},
       {minZoom: 5, maxZoom: 5, distance: 300},
       {minZoom: 6, maxZoom: 6, distance: 100},
       {minZoom: 7, maxZoom: 7, distance: 50},
       {minZoom: 8, maxZoom: 8, distance: 30},
-      {minZoom: 9, maxZoom: 9, distance: 10},
-      {minZoom: 10, maxZoom: 10, distance: 5},
-      {minZoom: 11, maxZoom: 11, distance: 3},
-      {minZoom: 12, maxZoom: 12, distance: 2},
-      {minZoom: 13, maxZoom: 13, distance: 1},
-      {minZoom: 14, maxZoom: 14, distance: 0.5},
-      {minZoom: 15, maxZoom: 15, distance: 0.2},
-      {minZoom: 16, maxZoom: 16, distance: 0.1},
-      {minZoom: 17, maxZoom: 17, distance: 0.05},
-      {minZoom: 18, maxZoom: 18, distance: 0.02},
+      {minZoom: 9, maxZoom: 9, distance: 20},
+      {minZoom: 10, maxZoom: 10, distance: 10},
+      {minZoom: 11, maxZoom: 11, distance: 5},
+      {minZoom: 12, maxZoom: 12, distance: 3},
+      {minZoom: 13, maxZoom: 13, distance: 2},
+      {minZoom: 14, maxZoom: 14, distance: 1},
+      {minZoom: 15, maxZoom: 15, distance: 0.5},
+      {minZoom: 16, maxZoom: 16, distance: 0.2},
+      {minZoom: 17, maxZoom: 17, distance: 0.1},
+      {minZoom: 18, maxZoom: 18, distance: 0.05},
       {minZoom: 19, maxZoom: 22, distance: 0.01},
     ]
   },
@@ -89,6 +87,7 @@ L.LeafletEquidistant = L.Control.extend({
     this._overlay = L.DomUtil.create('div', 'overlay-grid', this._map?.getContainer() /*this._map.getPane('overlayPane')*/);
     this._overlay.style.display = 'block';
     this._overlay.style.position = 'relative';
+    this._overlay.style.pointerEvents = 'none';
     this._overlay.style.top = '0';
     this._overlay.style.left = '0';
     this._overlay.style.width = 'auto';
@@ -98,7 +97,7 @@ L.LeafletEquidistant = L.Control.extend({
     const svgGrid = this._createSvgEl('svg', {
       xmlns: 'http://www.w3.org/2000/svg',
       viewBox: `0 0 ${mapSize.x} ${mapSize.y}`,
-      style: `width: ${mapSize.x}; height: ${mapSize.y}`
+      style: `width: ${mapSize.x}; height: ${mapSize.y}; pointer-events: none;`
     });
     this._overlay.appendChild(svgGrid);
     L.extend(this._overlay, {
@@ -107,17 +106,6 @@ L.LeafletEquidistant = L.Control.extend({
       onload: L.bind(this._onGridLoad, this),
     });
     this._map.on('move', this._update, this);
-
-    /** Masks for cut off ellipses */
-    const defs = this._createSvgEl('defs');
-    const topClipPath = this._createSvgEl('clipPath', {id: 'north-distances-mask'});
-    topClipPath.appendChild(this._createSvgEl('rect', {x: 0, y: 0, width: mapSize.x, height: yCenter }));
-    defs.appendChild(topClipPath);
-    const bottomClipPath = this._createSvgEl('clipPath', {id: 'south-distances-mask'});
-    bottomClipPath.appendChild(this._createSvgEl('rect', {x: 0, y: yCenter, width: mapSize.x, height: mapSize.y}));
-    defs.appendChild(bottomClipPath);
-    svgGrid.appendChild(defs);
-
 
     /** Center Lines */
     if (this.options.centerLines) {
@@ -148,24 +136,20 @@ L.LeafletEquidistant = L.Control.extend({
 
     if (!curentRange) return;
 
-    const northEllipseGroup = this._createSvgEl('g', {
-      fill: 'none',
-      stroke: this.options.distanceLinesColor,
-      'stroke-dasharray': this.options.distanceLinesDashArray,
-      'stroke-opacity': this.options.distanceLinesOpacity,
-      'stroke-width': this.options.distanceLinesWidth,
-      'clip-path': 'url(#north-distances-mask)'
-    });
-    const southEllipseGroup = this._createSvgEl('g', {
-      fill: 'none',
-      stroke: this.options.distanceLinesColor,
-      'stroke-dasharray': this.options.distanceLinesDashArray,
-      'stroke-opacity': this.options.distanceLinesOpacity,
-      'stroke-width': this.options.distanceLinesWidth,
-      'clip-path': 'url(#south-distances-mask)'
-    });
-    svgGrid.appendChild(northEllipseGroup);
-    svgGrid.appendChild(southEllipseGroup);
+    const canvas = L.DomUtil.create('canvas', 'overlay-equidistant-canvas', this._overlay);
+    canvas.width = mapSize.x;
+    canvas.height = mapSize.y;
+    canvas.style.position = 'absolute';
+    canvas.style.left = '0';
+    canvas.style.top = '0';
+    canvas.style.pointerEvents = 'none';
+
+    const ctx = canvas.getContext('2d');
+    ctx.strokeStyle = this.options.distanceLinesColor;
+    ctx.lineWidth = this.options.distanceLinesWidth;
+    ctx.globalAlpha = this.options.distanceLinesOpacity;
+    ctx.setLineDash(this.options.distanceLinesDashArray);
+
 
     const stepDistance = curentRange.distance * this._distanceFactor[this.options.distanceUnits];
     let distance = 0;
@@ -176,13 +160,27 @@ L.LeafletEquidistant = L.Control.extend({
       const rN = this._map.latLngToContainerPoint({lat: r._northEast.lat, lng: center.lng});
       const rW = this._map.latLngToContainerPoint({lat: center.lat, lng: r._southWest.lng});
       const rS = this._map.latLngToContainerPoint({lat: r._southWest.lat, lng: center.lng});
-      const mainRadius = xCenter - rW.x;
-      const topRadius = yCenter - rN.y;
-      const bottomRadius = rS.y - yCenter;
 
-      northEllipseGroup.appendChild(this._createSvgEl('ellipse', {rx: mainRadius, ry: topRadius, cx: xCenter, cy: yCenter}));
-      southEllipseGroup.appendChild(this._createSvgEl('ellipse', {rx: mainRadius, ry: bottomRadius, cx: xCenter, cy: yCenter}));
-
+      let i=0;
+      let lastPoint = {};
+      ctx.beginPath();
+      while( i<=360) {
+        const point = this._distPoints(center, i, distance);
+        i+=6;
+        if (!point || point.x <= 1 || point.y <= 1 || point.x >= mapSize.x-1 || point.y >= mapSize.y-1) {
+          ctx.stroke();
+          ctx.beginPath();
+          lastPoint = {};
+          continue;
+        }
+        if (!lastPoint.hasOwnProperty('x')) {
+          ctx.moveTo(point.x, point.y);
+        } else {
+          ctx.lineTo(point.x, point.y);
+        }
+        lastPoint = {...point};
+      }
+      ctx.stroke();
 
       if (this.options.labels) {
         const textN = this._createSvgEl('text', {
@@ -205,8 +203,29 @@ L.LeafletEquidistant = L.Control.extend({
         svgGrid.appendChild(this._createSvgEl('circle', {r: 1, cx: xCenter * 2 - rW.x, cy: rW.y, fill: this.options.labelsColor}));
       }
     }
-
   },
+
+  _distPoints: function(latlng, heading, distance) {
+    heading = (heading + 360) % 360;
+    let rad = Math.PI / 180,
+      radInv = 180 / Math.PI,
+      R = 6378137, // approximation of Earth's radius
+      lon1 = latlng.lng * rad,
+      lat1 = latlng.lat * rad,
+      rheading = heading * rad,
+      sinLat1 = Math.sin(lat1),
+      cosLat1 = Math.cos(lat1),
+      cosDistR = Math.cos(distance / R),
+      sinDistR = Math.sin(distance / R),
+      lat2 = Math.asin(sinLat1 * cosDistR + cosLat1 *
+        sinDistR * Math.cos(rheading)),
+      lon2 = lon1 + Math.atan2(Math.sin(rheading) * sinDistR *
+        cosLat1, cosDistR - sinLat1 * Math.sin(lat2));
+    lon2 = lon2 * radInv;
+    //lon2 = lon2 > 180 ? lon2 - 360 : lon2 < -180 ? lon2 + 360 : lon2;
+    return this._map.latLngToContainerPoint([lat2 * radInv, lon2]);
+  },
+
 
   _removeSvgGrid: function() {
     L.DomUtil.remove(this._overlay);

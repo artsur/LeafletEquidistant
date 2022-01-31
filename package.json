@@ -1,6 +1,6 @@
 {
   "name": "@artsur/leaflet-equidistant",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Equidistant polar grid for Leaflet maps",
   "main": "leaflet-equidistant.js",
   "scripts": {
